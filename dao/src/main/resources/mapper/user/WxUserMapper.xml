@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sep.user.repository.WxUserMapper">
+
+    <select id="countLower1Number" resultType="java.util.Map">
+        SELECT IFNULL(count(1), 0) AS count,invite_parent_id FROM tb_wx_user ${ew.customSqlSegment}
+    </select>
+
+    <select id="countLower2Number" resultType="java.util.Map">
+        SELECT IFNULL(SUM(lower.count),0) count,ids.invite_parent_id FROM
+        (SELECT id,invite_parent_id FROM tb_wx_user ${ew.customSqlSegment}) ids
+        LEFT JOIN (
+        SELECT IFNULL(count(1), 0) AS count,invite_parent_id FROM tb_wx_user
+        WHERE invite_parent_id IN (SELECT id FROM tb_wx_user ${ew.customSqlSegment})
+        GROUP BY invite_parent_id) lower
+        ON ids.id = lower.invite_parent_id
+        GROUP BY ids.invite_parent_id;
+    </select>
+
+</mapper>

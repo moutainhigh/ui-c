@@ -1,0 +1,106 @@
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*/*Mapper.xml
+  config-location: classpath:/mybatis-config.xml
+  type-aliases-package: com.*.*.model
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: is_deleted  #全局逻辑删除字段值 3.3.0开始支持，详情看下面。
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+
+spring:
+  servlet:
+    multipart:
+      max-request-size: 40MB
+      max-file-size: 40MB
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://81.68.243.199:3306/ui-c?characterEncoding=utf-8
+    username: root
+    password: C38455DF21FD47242F6E1DDAB8E36111
+    stat-view-servlet:
+      login-username: admin
+      login-password: admin
+  redis:
+    host: 81.68.243.199
+    port: 6379
+    password: BDAD34E489221F66D236E4C9E3A1D25D
+
+distribution:
+  enum:
+    bash:
+      path: com.sep.distribution.enums
+
+# 消息系统自身配置
+message:
+  enum:
+    bash:
+      path: com.sep.message.enums #枚举配置文件路径
+
+sms:
+  provider: Aliyuncs
+  aliyuncs:
+    product: Dysmsapi
+    domain: dysmsapi.aliyuncs.com
+    accessKeyId: LTAI4G8HoRAswxu5WakvFUbz
+    accessKeySecret: ec9EfM6MfLK1QJjiDTmmADCkE8Xabw
+    signName: 折到位
+    templateCode: SMS_165109516
+
+wx:
+  grant_type: authorization_code
+  mch_id: 1603022429  #微信支付的商户id
+  appId: wxd46ad98bf9508926
+  key: weixinxiaochengyuUXACN1234567890 #微信支付密钥
+  notify_url: https://ui-c.dhglobal.cn/xcx/wx/notify #微信支付回调地址
+  appSecret: 6757c859effb918625095c1c4d45ec3f
+  jscode2session: https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
+  getAccessToken: https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=SECRET
+  getUnlimited: https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=ACCESS_TOKEN
+  getwxacodeunlimit: https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=ACCESS_TOKEN
+  saveImgPath: /opt/image/
+  message:
+    send:
+      url: https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={access_token}
+
+role:
+  permission: 1-设置,2-用户,3-内容,4-商品,5-订单
+  #对象存储配置
+cos:
+  SecretId: AKIDgeOxKW5JyShibOIrX9WeYGp9NOQNMtW4
+  SecretKey: gjZP5XlmbCsLYV1IJ78KI1YbS5TdZIly
+  bucketName: sep-1255938217
+  region: ap-beijing
+#用户是否加积分配置：1加积分，0不加积分
+point: 0
+
+#小程序首页默认分类
+defaultclassifyname: 推荐
+defaultArticleClassifyId: 24
+mediaclassifyname: 合伙人
+
+sku_type:
+  rebate: 39
+  volume: 38
+
+cart:
+  prefix: better_select
+token:
+  prefix: uic_access_token
+  isShowZdw: 6789mall_is_show
+
+withdraw:
+  amount: 10
+
+baidu:
+  ak: ldPj7FFu06HtGIZznDfNWY0MWQ3UtELb
+  api: http://api.map.baidu.com/location/ip
+
+logging:
+  file: /data/sep/logs/omega-web.log
+  max-history: 30
+  level:
+    root: info
+zdw_notify_url: https://alliance.sep-edu.com/server/order/updateUse/
+zdw_get_skuid: https://alliance.sep-edu.com/server/order/getSkuIdById/

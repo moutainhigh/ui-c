@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sep.sku.repository.OrderMapper">
+
+    <resultMap id="statisticalMap" type="com.sep.sku.bean.StatisticalOrderInfo">
+        <result column="userId" property="userId" jdbcType="INTEGER" />
+        <result column="totalNum" property="totalNum" jdbcType="INTEGER" />
+        <result column="totalAmount" property="totalAmount" jdbcType="DECIMAL"/>
+    </resultMap>
+    <select id="statisticalOrderAmountAndNum" resultType="com.sep.sku.bean.StatisticalOrderInfo" parameterType="java.lang.String">
+
+        SELECT
+        user_id as userId,
+        count( 1 ) as totalNum,
+        sum( amount ) AS totalAmount
+        FROM
+        tb_order
+        WHERE status in (1,3,4)
+        <if test="list != null and list.size!=0">
+            And user_id in (
+            <foreach collection="list" item="item" index="index" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="payway !=null">
+            and pay_way = #{payway}
+        </if>
+        GROUP BY
+        user_id;
+    </select>
+
+    <select id="statisticalCounselorOrderAmountAndNum" resultType="com.sep.sku.bean.CounselorStatisticalOrderInfo" parameterType="java.lang.String">
+
+        SELECT
+        t1.counselor_id as counselorId,
+        count(t2.id) as totalSkuNum,
+        sum(t2.sku_price) AS totalAmount
+        FROM
+        tb_order t1,tb_order_sku t2
+        WHERE t1.order_no = t2.order_no and t1.status in (1,3,4)
+        <if test="list != null and list.size!=0">
+            And t1.counselor_id in (
+            <foreach collection="list" item="item" index="index" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="payway !=null">
+            and t1.pay_way = #{payway}
+        </if>
+        GROUP BY
+        t1.counselor_id;
+    </select>
+
+    <select id="statisticalOrderAmountAndIntegral" resultType="com.sep.sku.bean.ConsumeRecordInfo" parameterType="com.sep.sku.bean.ConsumeRecordQueryInfo">
+
+        SELECT
+        sum( integral_num ) as totalIntegral,
+        sum( amount ) AS totalAmount
+        FROM
+        tb_order
+        WHERE status in (1,3,4)
+        and user_id = #{userId}
+        <if test="startTime !=null and startTime !=''">
+            and <![CDATA[ pay_time  >= #{startTime} ]]>
+        </if>
+        <if test="endTime !=null and endTime !=''">
+            and <![CDATA[ pay_time  <= #{endTime} ]]>
+        </if>
+        <if test="payWay !=null">
+            and pay_way = #{payWay}
+        </if>
+    </select>
+
+    <select id="statisticalOrderCount" resultType="java.lang.Integer">
+
+        SELECT
+        count(1)
+        FROM
+        tb_order
+        WHERE status in (1,3,4)
+    </select>
+
+    <select id="statisticalOrderAmount" resultType="java.math.BigDecimal">
+
+        SELECT
+        sum( amount )
+        FROM
+        tb_order
+        WHERE status in (1,3,4)
+    </select>
+
+    <select id="statisticalMonthOrderCount" resultType="com.sep.sku.bean.StatisticalMonthOrderCount">
+        SELECT
+        DATE_FORMAT(pay_time,"%Y-%m-%d") orderDay,
+        count(id) as orderCount
+        FROM
+        tb_order where pay_time is not null
+        and pay_time <![CDATA[ >= ]]> #{startDate} and pay_time <![CDATA[ < ]]> #{endDate}
+        GROUP BY orderDay
+    </select>
+</mapper>
